@@ -1,8 +1,12 @@
 import pandas as pd
 
 class DataLoader:
+    def __init__(self):
+        ...
+
     # Класс для получения данных
-    def data_load(path_data_test: str, 
+    def data_load(self, 
+                  path_data_test: str, 
                   path_macro_categories: str, 
                   name_column_join: str, 
                   how_join: str = 'inner'):

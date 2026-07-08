@@ -2,7 +2,10 @@ import pandas as pd
 
 
 class AggData:
-    def agg_method(df: pd.DataFrame, delete_columns: list, pivot_table_args_dict: dict, no_relevant_cols_list: list):
+    def __init__(self):
+        ...
+        
+    def agg_method(self, df: pd.DataFrame, delete_columns: list, pivot_table_args_dict: dict, no_relevant_cols_list: list):
         """
         Метод для агрегации данных и удаления нерелевантных столбцов
         df - ДатаФрейм для агрегации
@@ -30,5 +33,6 @@ class AggData:
 
         # Удаление нерелевантных столбцов
         pivot_agg_df = no_relevant_columns(df=pivot_agg_df, no_relevant_cols=no_relevant_cols_list)
+        pivot_agg_df.fillna(0, inplace=True)
         return pivot_agg_df
 
