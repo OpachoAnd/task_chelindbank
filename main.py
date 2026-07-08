@@ -13,10 +13,15 @@ if __name__ == '__main__':
                               path_macro_categories=PATH_FILE_MACRO_CATEGORIES, 
                               name_column_join='category', 
                               how_join='inner')
-    
+
     # Агрегация данных
-    agg_df = AggData.agg_method(df=df, delete_columns=['category'])
-    
+    agg_df = AggData.agg_method(df=df, 
+                                delete_columns=['category'], 
+                                pivot_table_args_dict={'index': 'client_id', 
+                                                       'columns': 'macro_category',
+                                                       'values': 'trans_amount',
+                                                       'aggfunc': 'sum'})
+                    
     # Вызов метода-агрегации
 
     
