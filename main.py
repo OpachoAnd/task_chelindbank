@@ -20,8 +20,9 @@ if __name__ == '__main__':
                                 pivot_table_args_dict={'index': 'client_id', 
                                                        'columns': 'macro_category',
                                                        'values': 'trans_amount',
-                                                       'aggfunc': 'sum'})
-                    
+                                                       'aggfunc': 'sum'},
+                                no_relevant_cols_list=['Финансы и платежи', 'Супермаркеты'])
+    print('agg_df\n', agg_df)
     # Вызов метода-агрегации
 
     
