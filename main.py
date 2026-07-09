@@ -31,13 +31,23 @@ if __name__ == '__main__':
                                                                'values': 'trans_amount',
                                                                'aggfunc': 'sum'},
                                         no_relevant_cols_list=['Финансы и платежи', 'Супермаркеты'])
-
+    
     # 3. Получить список топ-5 категорий по величине score
     list_top_5_category: pd.DataFrame = macro_category_object.get_top_five_category_df(agg_df, 
                                         name_col_varience='variance',
                                         name_col_category='category', 
                                         name_col_active_client='active_client')
-    
+
+    # Получить расчитанные показатели по макрокатегориям
+    conclusion_stat_df = macro_category_object.stat_df.copy(deep=True)
+    conclusion_norm_stat_df = macro_category_object.norm_stat_df.copy(deep=True)
+    conclusion_norm_stat_df.rename(columns={'variance': 'normed_variance', 'active_client': 'normed_active_client'}, 
+                                   inplace=True)
+    output_stat_df = conclusion_stat_df.merge(conclusion_norm_stat_df, how='inner', on='category')
+    print('conclusion_stat_df\n', conclusion_stat_df)
+    print('conclusion_norm_stat_df\n', conclusion_norm_stat_df)
+    print('output_stat_df\n', output_stat_df)
+    exit(1)
     # 4. Получить df с топ-5 категорий по величине score
     top_5_category_agg_df: pd.DataFrame = agg_df[list_top_5_category].copy(deep=True)
     
@@ -61,6 +71,6 @@ if __name__ == '__main__':
     """
 
     # 7. Находим кластеры при числе кластеров k = 5
-    # k = 5
-    # clusterization_object.search_cluster(df=feature_eng_df, k=k)
+    k = 5
+    clusterization_object.search_cluster(df=feature_eng_df, k=k)
 

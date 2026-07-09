@@ -54,9 +54,10 @@ class MacroCategorySearch:
         active_client_df: pd.DataFrame = self.get_active_client_df(df, 
                                                                    name_col_category, 
                                                                    name_col_active_client)
+        
         # Соединение DF дисперсии и акт. клиентов
         stat_df = variance_df.merge(active_client_df, how='inner', on='category')
-        
+
         # Нормализация дисперсии и числа активных клиентов
         norm_stat_df = stat_df.copy(deep=True)
         norm_stat_df[name_col_varience] = norm_stat_df[name_col_varience] / max(norm_stat_df[name_col_varience])
@@ -80,8 +81,12 @@ class MacroCategorySearch:
         weight_act_clients = 0.3  # Вес активных клиентов для score
         count_top_category = 5  # Количество категорий с максимальным score
 
-        norm_stat_df, _ = self.get_norm_stat_df(df, name_col_varience, name_col_category, name_col_active_client)
+        norm_stat_df, stat_df = self.get_norm_stat_df(df, name_col_varience, name_col_category, name_col_active_client)
         norm_stat_df['score'] = weight_var * norm_stat_df[name_col_varience] + weight_act_clients * norm_stat_df[name_col_active_client]
+        
+        # Сохранение df для последующего вывода
+        self.norm_stat_df = norm_stat_df.copy(deep=True)
+        self.stat_df = stat_df.copy(deep=True)
 
         # Выбор топ-5 категорий по score
         norm_stat_df.sort_values('score', ascending=False, inplace=True)
