@@ -22,12 +22,20 @@ if __name__ == '__main__':
     agg_df = agg_data_object.agg_method(df=df, 
                                         delete_columns=['category'], 
                                         pivot_table_args_dict={'index': 'client_id', 
-                                                            'columns': 'macro_category',
-                                                            'values': 'trans_amount',
-                                                            'aggfunc': 'sum'},
+                                                               'columns': 'macro_category',
+                                                               'values': 'trans_amount',
+                                                               'aggfunc': 'sum'},
                                         no_relevant_cols_list=['Финансы и платежи', 'Супермаркеты'])
-    print('agg_df\n', agg_df, '\n')
 
-    macro_category_object.variance_trans_amount(agg_df)
+    # Получить список топ-5 категорий по величине score
+    list_top_5_category = macro_category_object.get_top_five_category_df(agg_df, 
+                                        name_col_varience='variance',
+                                        name_col_category='category', 
+                                        name_col_active_client='active_client')
+    
+    # Получить df с топ-5 категорий по величине score
+    top_5_category_agg_df = agg_df[list_top_5_category].copy(deep=True)
+    print('top_5_category_agg_df\n', top_5_category_agg_df)
+    print('list_top_5_category\n', list_top_5_category)
 
 
