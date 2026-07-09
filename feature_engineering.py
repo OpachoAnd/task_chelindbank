@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 class FeatureEngineering:
     def __init__(self):
         ...
