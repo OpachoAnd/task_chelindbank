@@ -2,6 +2,7 @@ import pandas as pd
 from data_loader import DataLoader
 from agg_data import AggData
 from macro_category_search import MacroCategorySearch
+from feature_engineering import FeatureEngineering
 
 PATH_FILE_DATA_TEST = 'datasets/data_test.xlsx'
 PATH_FILE_MACRO_CATEGORIES = 'datasets/macro_categories.xlsx'
@@ -11,6 +12,7 @@ if __name__ == '__main__':
     data_loader_object = DataLoader()
     agg_data_object = AggData()
     macro_category_object = MacroCategorySearch()
+    feature_engineering_object = FeatureEngineering()
 
     # Загрузка необходимых датасетов и объединение их по полю category
     df = data_loader_object.data_load(path_data_test=PATH_FILE_DATA_TEST, 
@@ -35,7 +37,10 @@ if __name__ == '__main__':
     
     # Получить df с топ-5 категорий по величине score
     top_5_category_agg_df = agg_df[list_top_5_category].copy(deep=True)
-    print('top_5_category_agg_df\n', top_5_category_agg_df)
-    print('list_top_5_category\n', list_top_5_category)
+    
+    # Получить df с новыми фичами 
+    feature_engineering_object.new_feature(df=top_5_category_agg_df, name_col_income='income')
+    # print('top_5_category_agg_df\n', top_5_category_agg_df)
+    # print('list_top_5_category\n', list_top_5_category)
 
 
