@@ -22,7 +22,7 @@ class Clusterization:
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
 
-        inertia = []
+        inertia = []  # Инерция - сумма квадратов расстояний точек до центров своих кластеров
         k_range = range(1, 20) # Проверяем от 1 до 10 кластеров
 
         for k in k_range:
@@ -40,60 +40,35 @@ class Clusterization:
         plt.grid(True)
         plt.savefig('elbow_method_graph.png')
 
-        # plt.show()
 
-
-    def search_cluster(self, df: pd.DataFrame):
-        print(df)
+    def search_cluster(self, df: pd.DataFrame, k: int):
+        df_ = df.copy(deep=True)
+        X = df_.values
         scaler = StandardScaler()
-        # Приводим каждый признак к среднему значению 0 и стандартному отклонению 1
-        X_scaled = scaler.fit_transform(df)
-        print('X_scaled\n', X_scaled)
-
-        k_means = KMeans(n_clusters=8 , 
+        X_scaled = scaler.fit_transform(X)  # Приводим каждый признак к среднему значению 0 и стандартному отклонению 1
+        k_means = KMeans(n_clusters=k, 
                          init='k-means++',
                          n_init='auto',
                          max_iter=300,
                          random_state=42)
-        clusters = k_means.fit_predict(X_scaled)
+        cluster_labels = k_means.fit_predict(X_scaled)
+        df_['cluster'] = cluster_labels
+        print('df_\n', df_)
 
-        centroids_original_scale = scaler.inverse_transform(k_means.cluster_centers_)
-        print("Центроиды кластеров:")
-        print(pd.DataFrame(centroids_original_scale, columns=df.columns))
+        segment_profiles = df_.groupby('cluster').mean().iloc[:, :-1]
+        print(segment_profiles)
+
+        # centroids_original_scale = scaler.inverse_transform(k_means.cluster_centers_)
         
         # Названия кластеров для каждой строки
-        labels = k_means.labels_
-        df['Кластер'] = labels
+        # labels = k_means.labels_
+        # df['Кластер'] = labels
 
-        print("\nДанные с меткой кластера:")
-        print(df)
+        # print("\nДанные с меткой кластера:")
+        # print(df)
 
-        pca = PCA(n_components=2)
-        reduced_data = pca.fit_transform(X_scaled)
-        print('reduced_data\n', reduced_data)
-        # plt.figure(figsize=(10, 7))
-        # sns.scatterplot(x=reduced_data[:, 0], y=reduced_data[:, 1], hue=clusters, palette='viridis', s=100)
-        # plt.title('Кластеризация K-Means (4 признака спроецированы в 2D через PCA)')
-        # plt.xlabel('Первая главная компонента')
-        # plt.ylabel('Вторая главная компонента')
-        # plt.legend(title='Кластер')
-        # plt.show()
+        # pca = PCA(n_components=2)
+        # reduced_data = pca.fit_transform(X_scaled)
+        # print('reduced_data\n', reduced_data)
 
-        # Явно создаем фигуру и оси
-        # fig, ax = plt.subplots(figsize=(8, 6))
-        plt.scatter(reduced_data[:, 0], reduced_data[:, 1], s=100, c='blue', marker='o', alpha=0.7)
-        # Добавляем подписи и заголовок
-        plt.xlabel('Ось X')
-        plt.ylabel('Ось Y')
-        plt.title('Диаграмма рассеяния')
-        plt.savefig('sine_wave.png')
-        # ax.plot(reduced_data[:, 0], reduced_data[:, 1], label='Кластер')
-        # ax.set_title('Кластер')
-        # ax.set_xlabel('Ось X')
-        # ax.set_ylabel('Ось Y')
-        # ax.grid(True)
-        # ax.legend()
-
-        # fig.savefig('sine_wave.png')
-        # plt.close(fig) # Освобождаем память
 

@@ -45,9 +45,10 @@ if __name__ == '__main__':
     feature_eng_df = feature_engineering_object.new_feature(df=top_5_category_agg_df, name_col_income='income')
 
     # 6. Находим число кластеров
-    clusterization_object.elbow_method(df=feature_eng_df)
+    # clusterization_object.elbow_method(df=feature_eng_df)
     # Вывод по пункту 6: после числа k кластеров = 5 график метода Локтя перестаёт существенно уменьшаться
 
-    # 7. Находим кластеры
-    clusterization_object.search_cluster(df=feature_eng_df)
+    # 7. Находим кластеры при числе кластеров k = 5
+    k = 5
+    clusterization_object.search_cluster(df=feature_eng_df, k=k)
 
