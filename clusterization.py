@@ -61,7 +61,7 @@ class Clusterization:
             
             score = silhouette_score(X_scaled, cluster_labels)
             silhouette_avg_scores.append(score)
-
+        
         plt.figure(figsize=(8, 5))
         plt.plot(k_range_sil, silhouette_avg_scores, marker='s', color='red', linestyle='--')
         plt.title("Средний силуэтный коэфф.")
@@ -73,6 +73,11 @@ class Clusterization:
 
 
     def search_cluster(self, df: pd.DataFrame, k: int):
+        """
+        Метод для поиска кластеров
+
+        return Клиенты с кластерами, Доля расходов кластеров в соответствующей макрокатегории
+        """
         df_ = df.copy(deep=True)
         X = df_.values
         scaler = StandardScaler()
@@ -83,9 +88,11 @@ class Clusterization:
                          max_iter=300,
                          random_state=42)
         cluster_labels = k_means.fit_predict(X_scaled)
+
+        # Клиенты с кластерами
         df_['cluster'] = cluster_labels
-        print('df_\n', df_)
 
-        segment_profiles = df_.groupby('cluster').mean().iloc[:, :-1]
-        print(segment_profiles)
+        # Доля расходов кластеров в соответствующей макрокатегории
+        share_expenses = df_.groupby('cluster').mean()
 
+        return df_, share_expenses

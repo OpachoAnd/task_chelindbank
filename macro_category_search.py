@@ -3,7 +3,7 @@ import pandas as pd
 
 class MacroCategorySearch:
     """
-    Класс для поиска топ-5 кластеров 
+    Класс для поиска топ-5 макрокатегорий 
     """
     def __init__(self):
         # Дисперсия и Активные клиенты

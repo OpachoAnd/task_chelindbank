@@ -37,17 +37,13 @@ if __name__ == '__main__':
                                         name_col_varience='variance',
                                         name_col_category='category', 
                                         name_col_active_client='active_client')
-
     # Получить расчитанные показатели по макрокатегориям
     conclusion_stat_df = macro_category_object.stat_df.copy(deep=True)
     conclusion_norm_stat_df = macro_category_object.norm_stat_df.copy(deep=True)
     conclusion_norm_stat_df.rename(columns={'variance': 'normed_variance', 'active_client': 'normed_active_client'}, 
                                    inplace=True)
-    output_stat_df = conclusion_stat_df.merge(conclusion_norm_stat_df, how='inner', on='category')
-    print('conclusion_stat_df\n', conclusion_stat_df)
-    print('conclusion_norm_stat_df\n', conclusion_norm_stat_df)
-    print('output_stat_df\n', output_stat_df)
-    exit(1)
+    output_stat_df: pd.DataFrame = conclusion_stat_df.merge(conclusion_norm_stat_df, how='inner', on='category')
+
     # 4. Получить df с топ-5 категорий по величине score
     top_5_category_agg_df: pd.DataFrame = agg_df[list_top_5_category].copy(deep=True)
     
@@ -63,14 +59,27 @@ if __name__ == '__main__':
     clusterization_object.silhouette_method(df=feature_eng_df)
 
     """
-    Вывод по пункту 6 и 7: 
+    Вывод по пунктам 6 и 7: 
     После числа k кластеров = 5 график метода Локтя перестаёт существенно уменьшаться
     При значении числа k кластеров = 5 на графике метода Silhouette самый высокий пик
 
     Следовательно, оптимальное число кластеров k = 5
     """
 
-    # 7. Находим кластеры при числе кластеров k = 5
+    # 8. Находим кластеры при числе кластеров k = 5
     k = 5
-    clusterization_object.search_cluster(df=feature_eng_df, k=k)
+    # Клиенты с кластерами, Доля расходов кластеров в соответствующей макрокатегории
+    clients_with_clusters_df, share_expenses_df = clusterization_object.search_cluster(df=feature_eng_df, k=k)
 
+
+    """
+    Сохранение выводов:
+    """
+    # Сохранение таблицы с расчитанными показателями по макрокатегориями
+    output_stat_df.to_excel('output_stat_df.xlsx', index=False)
+
+    # Сохранение таблицы Клиенты с кластерами
+    clients_with_clusters_df.to_excel('clients_with_clusters_df.xlsx', index=True)
+
+    # Сохранение таблицы Доля расходов кластеров в соответствующей макрокатегории
+    share_expenses_df.to_excel('share_expenses_df.xlsx', index=True)
