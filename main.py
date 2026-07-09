@@ -15,13 +15,13 @@ if __name__ == '__main__':
     feature_engineering_object = FeatureEngineering()
 
     # Загрузка необходимых датасетов и объединение их по полю category
-    df = data_loader_object.data_load(path_data_test=PATH_FILE_DATA_TEST, 
+    df: pd.DataFrame = data_loader_object.data_load(path_data_test=PATH_FILE_DATA_TEST, 
                                       path_macro_categories=PATH_FILE_MACRO_CATEGORIES, 
                                       name_column_join='category', 
                                       how_join='inner')
 
     # Агрегация данных, удаление нерелевантных категорий, замена NaN на 0
-    agg_df = agg_data_object.agg_method(df=df, 
+    agg_df: pd.DataFrame = agg_data_object.agg_method(df=df, 
                                         delete_columns=['category'], 
                                         pivot_table_args_dict={'index': 'client_id', 
                                                                'columns': 'macro_category',
@@ -30,17 +30,16 @@ if __name__ == '__main__':
                                         no_relevant_cols_list=['Финансы и платежи', 'Супермаркеты'])
 
     # Получить список топ-5 категорий по величине score
-    list_top_5_category = macro_category_object.get_top_five_category_df(agg_df, 
+    list_top_5_category: pd.DataFrame = macro_category_object.get_top_five_category_df(agg_df, 
                                         name_col_varience='variance',
                                         name_col_category='category', 
                                         name_col_active_client='active_client')
     
     # Получить df с топ-5 категорий по величине score
-    top_5_category_agg_df = agg_df[list_top_5_category].copy(deep=True)
+    top_5_category_agg_df: pd.DataFrame = agg_df[list_top_5_category].copy(deep=True)
     
     # Получить df с новыми фичами 
-    feature_engineering_object.new_feature(df=top_5_category_agg_df, name_col_income='income')
-    # print('top_5_category_agg_df\n', top_5_category_agg_df)
-    # print('list_top_5_category\n', list_top_5_category)
+    feature_eng_df = feature_engineering_object.new_feature(df=top_5_category_agg_df, name_col_income='income')
+    print('feature_eng_df\n', feature_eng_df)
 
 
