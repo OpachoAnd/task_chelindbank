@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
+from sklearn.metrics import silhouette_score
 
 
 class Clusterization:
@@ -40,6 +41,36 @@ class Clusterization:
         plt.grid(True)
         plt.savefig('elbow_method_graph.png')
 
+    def silhouette_method(self, df: pd.DataFrame):
+        """
+        Средний силуэтный коэффициент (Silhouette Score) для определения числа кластеров
+        """
+        k_1 = 2  # Силуэт коэфф. рассчитывается с k_1 кластеров
+        k_2 = 11  # Силуэт коэфф. рассчитывается до k_2 кластеров
+        X = df.values  # Извлекаем значения без индекса
+
+        # Стандартизация данных (приведение к среднему 0 и дисперсии 1)
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+        silhouette_avg_scores = []
+        k_range_sil = range(k_1, k_2) # Силуэт рассчитывается начиная с 2 кластеров
+
+        for k in k_range_sil:
+            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42, n_init='auto')
+            cluster_labels = kmeans.fit_predict(X_scaled)
+            
+            score = silhouette_score(X_scaled, cluster_labels)
+            silhouette_avg_scores.append(score)
+
+        plt.figure(figsize=(8, 5))
+        plt.plot(k_range_sil, silhouette_avg_scores, marker='s', color='red', linestyle='--')
+        plt.title("Средний силуэтный коэфф.")
+        plt.xlabel("Число кластеров (k)")
+        plt.ylabel("Средний силуэтный коэфф.")
+        plt.xticks(k_range_sil)
+        plt.grid(True)
+        plt.savefig('silhouette_method_graph.png')
+
 
     def search_cluster(self, df: pd.DataFrame, k: int):
         df_ = df.copy(deep=True)
@@ -57,18 +88,4 @@ class Clusterization:
 
         segment_profiles = df_.groupby('cluster').mean().iloc[:, :-1]
         print(segment_profiles)
-
-        # centroids_original_scale = scaler.inverse_transform(k_means.cluster_centers_)
-        
-        # Названия кластеров для каждой строки
-        # labels = k_means.labels_
-        # df['Кластер'] = labels
-
-        # print("\nДанные с меткой кластера:")
-        # print(df)
-
-        # pca = PCA(n_components=2)
-        # reduced_data = pca.fit_transform(X_scaled)
-        # print('reduced_data\n', reduced_data)
-
 

@@ -44,11 +44,23 @@ if __name__ == '__main__':
     # 5. Получить df с новыми фичами 
     feature_eng_df = feature_engineering_object.new_feature(df=top_5_category_agg_df, name_col_income='income')
 
-    # 6. Находим число кластеров
-    # clusterization_object.elbow_method(df=feature_eng_df)
-    # Вывод по пункту 6: после числа k кластеров = 5 график метода Локтя перестаёт существенно уменьшаться
+    # 6. Находим число кластеров по методу локтя
+    # График сохраняется в elbow_method_graph.png в корне проекта
+    clusterization_object.elbow_method(df=feature_eng_df)
+
+    # 7. Находим число кластеров по методу silhouette
+    # График сохраняется в silhouette_method_graph.png' в корне проекта
+    clusterization_object.silhouette_method(df=feature_eng_df)
+
+    """
+    Вывод по пункту 6 и 7: 
+    После числа k кластеров = 5 график метода Локтя перестаёт существенно уменьшаться
+    При значении числа k кластеров = 5 на графике метода Silhouette самый высокий пик
+
+    Следовательно, оптимальное число кластеров k = 5
+    """
 
     # 7. Находим кластеры при числе кластеров k = 5
-    k = 5
-    clusterization_object.search_cluster(df=feature_eng_df, k=k)
+    # k = 5
+    # clusterization_object.search_cluster(df=feature_eng_df, k=k)
 
